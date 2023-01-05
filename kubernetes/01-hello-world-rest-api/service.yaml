@@ -1,62 +1,37 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
   annotations:
-    deployment.kubernetes.io/revision: "4"
-  creationTimestamp: "2023-01-05T12:08:39Z"
-  generation: 4
+    cloud.google.com/neg: '{"ingress":true}'
+  creationTimestamp: "2023-01-05T11:55:41Z"
+  finalizers:
+  - service.kubernetes.io/load-balancer-cleanup
   labels:
     app: hello-world
   name: hello-world
   namespace: default
-  resourceVersion: "37725"
-  uid: f31bd6d3-1204-466b-996a-0cf223528430
+  resourceVersion: "28091"
+  uid: 535c92e0-134a-4264-b4ae-dff84241f176
 spec:
-  progressDeadlineSeconds: 600
-  replicas: 3
-  revisionHistoryLimit: 10
+  allocateLoadBalancerNodePorts: true
+  clusterIP: 10.124.11.162
+  clusterIPs:
+  - 10.124.11.162
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - nodePort: 31604
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
   selector:
-    matchLabels:
-      app: hello-world
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
-  template:
-    metadata:
-      creationTimestamp: null
-      labels:
-        app: hello-world
-    spec:
-      containers:
-      - image: in28min/hello-world-rest-api:0.0.1.RELEASE
-        imagePullPolicy: IfNotPresent
-        name: hello-world-rest-api
-        resources: {}
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
-      terminationGracePeriodSeconds: 30
+    app: hello-world
+  sessionAffinity: None
+  type: LoadBalancer
 status:
-  availableReplicas: 3
-  conditions:
-  - lastTransitionTime: "2023-01-05T12:08:49Z"
-    lastUpdateTime: "2023-01-05T12:08:49Z"
-    message: Deployment has minimum availability.
-    reason: MinimumReplicasAvailable
-    status: "True"
-    type: Available
-  - lastTransitionTime: "2023-01-05T12:08:39Z"
-    lastUpdateTime: "2023-01-05T12:16:41Z"
-    message: ReplicaSet "hello-world-64dfb8968c" has successfully progressed.
-    reason: NewReplicaSetAvailable
-    status: "True"
-    type: Progressing
-  observedGeneration: 4
-  readyReplicas: 3
-  replicas: 3
-  updatedReplicas: 3
+  loadBalancer:
+    ingress:
+    - ip: 34.165.141.92
